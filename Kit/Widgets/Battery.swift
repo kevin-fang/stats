@@ -19,6 +19,7 @@ public class BatterykWidget: WidgetWrapper {
     private var hideAdditionalWhenFull: Bool = true
     
     private var percentage: Double? = nil
+    private var power: String = ""
     private var time: Int = 0
     private var charging: Bool = false
     private var ACStatus: Bool = false
@@ -45,6 +46,7 @@ public class BatterykWidget: WidgetWrapper {
         
         if preview {
             self.percentage = 0.72
+            self.power = "5.00 W"
             self.additional = "none"
             self.iconState = true
             self.colorState = false
@@ -84,9 +86,7 @@ public class BatterykWidget: WidgetWrapper {
                 x += rowWidth + Constants.Widget.spacing
             case "percentageAndTime":
                 var value = "n/a"
-                if let percentage = self.percentage {
-                    value = "\(Int((percentage.rounded(toPlaces: 2)) * 100))%"
-                }
+                value = self.power
                 let rowWidth = self.drawTwoRows(
                     first: value,
                     second: Double(self.time*60).printSecondsToHoursMinutesSeconds(short: isShortTimeFormat),
@@ -292,12 +292,16 @@ public class BatterykWidget: WidgetWrapper {
         return rowWidth
     }
     
-    public func setValue(percentage: Double? = nil, ACStatus: Bool? = nil, isCharging: Bool? = nil, time: Int? = nil) {
+    public func setValue(percentage: Double? = nil, power: String? = nil, ACStatus: Bool? = nil, isCharging: Bool? = nil, time: Int? = nil) {
         var updated: Bool = false
         let timeFormat: String = Store.shared.string(key: "\(self.title)_timeFormat", defaultValue: self.timeFormat)
         
         if self.percentage != percentage {
             self.percentage = percentage
+            updated = true
+        }
+        if let power = power, self.power != power {
+            self.power = power
             updated = true
         }
         if let status = ACStatus, self.ACStatus != status {

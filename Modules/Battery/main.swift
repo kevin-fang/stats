@@ -134,8 +134,10 @@ public class Battery: Module {
                 widget.setValue([[ColorValue(value.level)]])
                 widget.setColorZones((0.15, 0.3))
             case let widget as BatterykWidget:
+                let batteryPower = value.voltage * (Double(abs(value.amperage))/1000)
                 widget.setValue(
-                    percentage: value.level ,
+                    percentage: value.level,
+                    power: "\(batteryPower.roundTo(decimalPlaces: 2)) W",
                     ACStatus: value.powerSource != "Battery Power",
                     isCharging: value.isCharging ,
                     time: value.timeToEmpty == 0 && value.timeToCharge != 0 ? value.timeToCharge : value.timeToEmpty
